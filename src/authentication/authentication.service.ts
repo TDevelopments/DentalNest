@@ -1,17 +1,20 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { RegisterUserDto } from './dto/register.dto';
+import { RegisterUserDto } from './dto/register-user.dto';
 import * as bcrypt from 'bcrypt';
 import { UsersService } from 'src/users/users.service';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
-import { TokenPayload } from './tokenPayload.interface';
+import { JwtPayload } from './interfaces/jwt-payload.interface';
+import { User } from 'src/users/entities/user.entity';
+import { AccessTokenDto } from './dto/access-token.dto';
+import { AppConfigService } from 'src/config/app/config.service';
 
 @Injectable()
 export class AuthenticationService {
   constructor(
     private readonly usersService: UsersService,
     private readonly jwtService: JwtService,
-    private readonly configService: ConfigService,
+    private readonly appConfigService: AppConfigService,
   ) {}
 
   public async register(registerUserDto: RegisterUserDto) {
@@ -35,7 +38,10 @@ export class AuthenticationService {
       user.password = undefined;
       return user;
     } catch (error) {
-      throw new HttpException('Credenciales invalidas', HttpStatus.BAD_REQUEST);
+      throw new HttpException(
+        'Credenciales invalidas',
+        HttpStatus.UNAUTHORIZED,
+      );
     }
   }
 
@@ -52,15 +58,24 @@ export class AuthenticationService {
     }
   }
 
-  public getCookieWithJwtToken(userId: number) {
-    const payload: TokenPayload = { userId };
-    const token = this.jwtService.sign(payload);
-    return `Authentication=${token}; HttpOnly; Path=/; Max-Age=${this.configService.get(
-      'JWT_EXPIRATION_TIME',
-    )}`;
+  //public getCookieWithJwtToken(userId: number) {
+  //  const payload: JwtPayload = { userId };
+  //  const token = this.jwtService.sign(payload);
+  //  return `Authentication=${token}; HttpOnly; Path=/; Max-Age=${this.configService.get(
+  //    'JWT_EXPIRATION_TIME',
+  //  )}`;
+  //}
+
+  public getAcessToken(user: User): AccessTokenDto {
+    const payload: JwtPayload = { userId: user.id };
+    const accessTokenDto: AccessTokenDto = {
+      accessToken: this.jwtService.sign(payload),
+      expiresIn: this.appConfigService.jwtExpirationTime,
+    };
+    return accessTokenDto;
   }
 
-  public getCookieForLogout() {
-    return `Authentication=; HttpOnly; Path=/; Max-Age=0`;
-  }
+  //public getCookieForLogout() {
+  //  return `Authentication=; HttpOnly; Path=/; Max-Age=0`;
+  //}
 }

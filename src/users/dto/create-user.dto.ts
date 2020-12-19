@@ -1,13 +1,7 @@
-export class CreateUserDto {
-  email: string;
-  password: string;
-  firstName: string;
-  lastName: string;
-  genre: string;
-  birthDate: Date;
-  role: string;
-  identityType: string;
-  identityNumber: number;
-  phoneNumber1: number;
-  phoneNumber2: number;
-}
+import { OmitType } from '@nestjs/swagger';
+import { User } from '../entities/user.entity';
+
+export class CreateUserDto extends OmitType(User, [
+  'createdAt',
+  'updatedAt',
+] as const) {}

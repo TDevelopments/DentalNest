@@ -26,8 +26,6 @@ export class UsersController {
 
   @Post()
   @ApiOperation({ summary: 'Create a user' })
-  @ApiResponse({ status: 403, description: 'Forbidden' })
-  @ApiResponse({ status: 404, description: 'Not found' })
   create(@Body() createUserDto: CreateUserDto) {
     return this.usersService.create(createUserDto);
   }
