@@ -12,10 +12,12 @@ import {
   IsEnum,
   IsInt,
   IsNotEmpty,
+  IsOptional,
   IsString,
   MinLength,
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+import { Exclude } from 'class-transformer';
 
 export enum UserRole {
   CLIENT = 'client',
@@ -41,11 +43,13 @@ export class User {
 
   @Column({ unique: true })
   @IsEmail()
+  @ApiProperty({ example: 'example@example.com' })
   public email: string;
 
   @Column()
   @IsString()
   @IsNotEmpty()
+  @Exclude()
   @MinLength(7)
   public password: string;
 
@@ -96,6 +100,7 @@ export class User {
 
   @Column({ nullable: true })
   @ApiProperty({ example: 959369909 })
+  @IsOptional()
   public phoneNumber2?: number;
 
   @Column()

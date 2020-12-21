@@ -1,9 +1,10 @@
-import { ValidationPipe } from '@nestjs/common';
+import { ClassSerializerInterceptor, ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { NestFactory } from '@nestjs/core';
+import { NestFactory, Reflector } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as cookieParser from 'cookie-parser';
+import { join } from 'path';
 import { AppModule } from './app.module';
 import { AppConfigService } from './config/app/config.service';
 
@@ -11,7 +12,11 @@ async function bootstrap() {
   const app: NestExpressApplication = await NestFactory.create(AppModule);
 
   app.use(cookieParser());
-  app.useGlobalPipes(new ValidationPipe());
+  app.useGlobalPipes(new ValidationPipe({ skipMissingProperties: true }));
+  app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
+  app.useStaticAssets(
+    join('node_modules', 'swagger-ui-themes', 'themes', '3.x'),
+  );
 
   const options = new DocumentBuilder()
     .setTitle('Dental Api')
@@ -24,7 +29,10 @@ async function bootstrap() {
     .build();
 
   const document = SwaggerModule.createDocument(app, options);
-  SwaggerModule.setup('docs', app, document);
+
+  SwaggerModule.setup('docs', app, document, {
+    customSiteTitle: 'Dental Api',
+  });
 
   const configService = app.get<AppConfigService>(AppConfigService);
   await app.listen(configService.port);

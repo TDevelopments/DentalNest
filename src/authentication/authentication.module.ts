@@ -9,6 +9,7 @@ import { JwtStrategy } from './strategies/jwt.strategy';
 import { LocalStrategy } from './strategies/local.strategy';
 import { AppConfigModule } from 'src/config/app/config.module';
 import { AppConfigService } from 'src/config/app/config.service';
+import { AnonymousStrategy } from './strategies/anonymous.strategy';
 
 @Module({
   imports: [
@@ -27,6 +28,11 @@ import { AppConfigService } from 'src/config/app/config.service';
     }),
   ],
   controllers: [AuthenticationController],
-  providers: [AuthenticationService, LocalStrategy, JwtStrategy],
+  providers: [
+    AuthenticationService,
+    LocalStrategy,
+    JwtStrategy,
+    AnonymousStrategy,
+  ],
 })
 export class AuthenticationModule {}

@@ -24,7 +24,6 @@ export class AuthenticationService {
         ...registerUserDto,
         password: hashedPassword,
       });
-      createdUser.password = undefined;
       return createdUser;
     } catch (error) {
       throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -35,7 +34,6 @@ export class AuthenticationService {
     try {
       const user = await this.usersService.findByEmail(email);
       await this.verifyPassword(plainTextPassword, user.password);
-      user.password = undefined;
       return user;
     } catch (error) {
       throw new HttpException(

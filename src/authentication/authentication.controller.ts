@@ -11,6 +11,9 @@ import {
   Req,
   Res,
   HttpException,
+  UseInterceptors,
+  ClassSerializerInterceptor,
+  SetMetadata,
 } from '@nestjs/common';
 import {
   ApiBody,
@@ -20,7 +23,7 @@ import {
   ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
-import { Response, response } from 'express';
+import { request, Response, response } from 'express';
 import { AuthenticationService } from './authentication.service';
 import { LoginUserDto } from './dto/login-user.dto';
 import { RegisterUserDto } from './dto/register-user.dto';
@@ -29,6 +32,11 @@ import { LocalAuthenticationGuard } from '../common/guards/local-auth.guard';
 import { RequestWithUser } from './interfaces/request-with-user.interface';
 import { AccessTokenDto } from './dto/access-token.dto';
 import { BaseException } from 'src/common/dto/base-exception.dto';
+import { UserRole } from 'src/users/entities/user.entity';
+import { Roles } from 'src/common/decorators/metadata/user-roles.decorator';
+import { RolesGuard } from 'src/common/guards/roles.guard';
+import { AuthGuard } from '@nestjs/passport';
+import { JwtOrAnonymousAuthenticationGuard } from 'src/common/guards/jwt-or-anonymous.guard';
 
 @ApiTags('authentication')
 @Controller('authentication')
@@ -39,29 +47,21 @@ export class AuthenticationController {
   @UseGuards(JwtAuthenticationGuard)
   authenticate(@Req() request: RequestWithUser) {
     const user = request.user;
-    user.password = undefined;
     return user;
   }
 
   @Post('register')
-  async register(@Body() registerUserDto: RegisterUserDto) {
+  @Roles(UserRole.ADMIN)
+  @UseGuards(JwtOrAnonymousAuthenticationGuard, RolesGuard)
+  async register(
+    @Body() registerUserDto: RegisterUserDto,
+    @Req() request: RequestWithUser,
+  ) {
+    if (!request.user.role) {
+      registerUserDto.role = UserRole.CLIENT;
+    }
     return this.authenticationService.register(registerUserDto);
   }
-
-  //@HttpCode(200)
-  //@UseGuards(LocalAuthenticationGuard)
-  //@ApiBody({ type: LoginUserDto })
-  //@Post('loginWithCookies')
-  //async logInWithCookies(
-  //  @Req() request: RequestWithUser,
-  //  @Res() response: Response,
-  //) {
-  //  const { user } = request;
-  //  const cookie = this.authenticationService.getCookieWithJwtToken(user.id);
-  //  response.setHeader('Set-Cookie', cookie);
-  //  user.password = undefined;
-  //  return response.send(user);
-  //}
 
   @HttpCode(200)
   @UseGuards(LocalAuthenticationGuard)
