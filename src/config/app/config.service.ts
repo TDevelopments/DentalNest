@@ -16,4 +16,20 @@ export class AppConfigService {
   get jwtExpirationTime(): number {
     return Number(this.configService.get<number>('app.jwtExpirationTime'));
   }
+
+  get awsRegion(): string {
+    return this.configService.get<string>('app.awsRegion');
+  }
+
+  get awsAccessKeyId(): string {
+    return this.configService.get<string>('app.awsAccessKeyId');
+  }
+
+  get awsSecretAccessKey(): string {
+    return this.configService.get<string>('app.awsSecretAccessKey');
+  }
+
+  get awsPublicBucketName(): string {
+    return this.configService.get('app.awsPublicBucketName');
+  }
 }

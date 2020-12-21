@@ -32,7 +32,7 @@ import { LocalAuthenticationGuard } from '../common/guards/local-auth.guard';
 import { RequestWithUser } from './interfaces/request-with-user.interface';
 import { AccessTokenDto } from './dto/access-token.dto';
 import { BaseException } from 'src/common/dto/base-exception.dto';
-import { UserRole } from 'src/users/entities/user.entity';
+import { UserRole } from 'src/models/user.entity';
 import { Roles } from 'src/common/decorators/metadata/user-roles.decorator';
 import { RolesGuard } from 'src/common/guards/roles.guard';
 import { AuthGuard } from '@nestjs/passport';

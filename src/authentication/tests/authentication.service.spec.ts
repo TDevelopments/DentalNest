@@ -7,7 +7,7 @@ import { AppConfigService } from 'src/config/app/config.service';
 import { PostgresConfigModule } from 'src/config/database/postgres/config.module';
 import { PostgresConfigService } from 'src/config/database/postgres/config.service';
 import { PostgresDatabaseProviderModule } from 'src/providers/database/postgres/provider.module';
-import { User } from 'src/users/entities/user.entity';
+import { User } from 'src/models/user.entity';
 import { UsersModule } from 'src/users/users.module';
 import { UsersService } from 'src/users/users.service';
 import { Repository } from 'typeorm';

@@ -4,6 +4,8 @@ import {
   Column,
   CreateDateColumn,
   UpdateDateColumn,
+  JoinColumn,
+  OneToOne,
 } from 'typeorm';
 import {
   IsDate,
@@ -18,6 +20,7 @@ import {
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { Exclude } from 'class-transformer';
+import PublicFile from './publicFile.entity';
 
 export enum UserRole {
   CLIENT = 'client',
@@ -40,6 +43,13 @@ export enum UserIdentity {
 export class User {
   @PrimaryGeneratedColumn()
   public id?: number;
+
+  @JoinColumn()
+  @OneToOne(() => PublicFile, {
+    eager: true,
+    nullable: true,
+  })
+  public avatar?: PublicFile;
 
   @Column({ unique: true })
   @IsEmail()

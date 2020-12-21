@@ -3,7 +3,7 @@ import {
   UserGender,
   UserIdentity,
   UserRole,
-} from 'src/users/entities/user.entity';
+} from 'src/models/user.entity';
 
 export const mockedUser: User = {
   id: 1,

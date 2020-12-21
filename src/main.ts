@@ -7,6 +7,7 @@ import * as cookieParser from 'cookie-parser';
 import { join } from 'path';
 import { AppModule } from './app.module';
 import { AppConfigService } from './config/app/config.service';
+import { config } from 'aws-sdk';
 
 async function bootstrap() {
   const app: NestExpressApplication = await NestFactory.create(AppModule);
@@ -35,6 +36,12 @@ async function bootstrap() {
   });
 
   const configService = app.get<AppConfigService>(AppConfigService);
+
+  config.update({
+    accessKeyId: configService.awsAccessKeyId,
+    secretAccessKey: configService.awsSecretAccessKey,
+    region: configService.awsRegion,
+  });
   await app.listen(configService.port);
 }
 bootstrap();
