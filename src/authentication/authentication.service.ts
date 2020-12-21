@@ -64,13 +64,13 @@ export class AuthenticationService {
   //  )}`;
   //}
 
-  public getAcessToken(user: User): AccessTokenDto {
+  public getAcessToken(user: User): string {
     const payload: JwtPayload = { userId: user.id };
-    const accessTokenDto: AccessTokenDto = {
-      accessToken: this.jwtService.sign(payload),
-      expiresIn: this.appConfigService.jwtExpirationTime,
-    };
-    return accessTokenDto;
+    return this.jwtService.sign(payload);
+  }
+
+  public getExpirationTime(): number {
+    return this.appConfigService.jwtExpirationTime;
   }
 
   //public getCookieForLogout() {

@@ -82,18 +82,12 @@ export class AuthenticationController {
   async logIn(
     @Req() request: RequestWithUser,
     @Res({ passthrough: true }) response: Response,
-  ) {
+  ): Promise<AccessTokenDto> {
     const { user } = request;
-    return this.authenticationService.getAcessToken(user);
+    const accessTokenDto: AccessTokenDto = {
+      accessToken: this.authenticationService.getAcessToken(user),
+      expiresIn: this.authenticationService.getExpirationTime(),
+    };
+    return accessTokenDto;
   }
-
-  //@Post('logout')
-  //@UseGuards(JwtAuthenticationGuard)
-  //async logOut(@Req() request: RequestWithUser, @Res() response: Response) {
-  //  response.setHeader(
-  //    'Set-Cookie',
-  //    this.authenticationService.getCookieForLogout(),
-  //  );
-  //  return response.status(200);
-  //}
 }
