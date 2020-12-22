@@ -20,6 +20,7 @@ export class FilesService {
     const uploadResult = await s3
       .upload({
         Bucket: this.appConfigService.awsPublicBucketName,
+        
         Body: dataBuffer,
         Key: `${uuid()}-${filename}`,
       })

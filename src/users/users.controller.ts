@@ -17,6 +17,8 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import {
   ApiBearerAuth,
+  ApiBody,
+  ApiConsumes,
   ApiOkResponse,
   ApiOperation,
   ApiResponse,
@@ -26,8 +28,8 @@ import { JwtAuthenticationGuard } from 'src/common/guards/jwt-auth.guard';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { RequestWithUser } from 'src/authentication/interfaces/request-with-user.interface';
 import { Express } from 'express';
+import { ApiFile } from 'src/common/decorators/metadata/api-file.decorator';
 
-@ApiBearerAuth()
 @ApiTags('users')
 @Controller('users')
 export class UsersController {
@@ -35,6 +37,9 @@ export class UsersController {
 
   @Post('avatar')
   @UseGuards(JwtAuthenticationGuard)
+  @ApiConsumes('multipart/form-data')
+  @ApiFile()
+  @ApiBearerAuth()
   @UseInterceptors(FileInterceptor('file'))
   async addAvatar(
     @Req() request: RequestWithUser,

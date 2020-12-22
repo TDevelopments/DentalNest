@@ -33,6 +33,7 @@ async function bootstrap() {
 
   SwaggerModule.setup('docs', app, document, {
     customSiteTitle: 'Dental Api',
+    //customCssUrl: '/theme-material.css',
   });
 
   const configService = app.get<AppConfigService>(AppConfigService);

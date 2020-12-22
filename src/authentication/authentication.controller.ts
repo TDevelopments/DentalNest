@@ -16,6 +16,7 @@ import {
   SetMetadata,
 } from '@nestjs/common';
 import {
+  ApiBearerAuth,
   ApiBody,
   ApiExtraModels,
   ApiOkResponse,
@@ -44,6 +45,8 @@ export class AuthenticationController {
   constructor(private readonly authenticationService: AuthenticationService) {}
 
   @Get()
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Obtener informacion del autenticado' })
   @UseGuards(JwtAuthenticationGuard)
   authenticate(@Req() request: RequestWithUser) {
     const user = request.user;
@@ -52,6 +55,12 @@ export class AuthenticationController {
 
   @Post('register')
   @Roles(UserRole.ADMIN)
+  @ApiBearerAuth()
+  @ApiOperation({
+    summary: 'Registro para todos los usuarios',
+    description: `Los usuarios seran creados por defecto con el rol de CLIENTE, 
+  si se hace la operacion con un token con privilegios de administrador podra elegirse cualquier rol para el usuario a crear`,
+  })
   @UseGuards(JwtOrAnonymousAuthenticationGuard, RolesGuard)
   async register(
     @Body() registerUserDto: RegisterUserDto,
