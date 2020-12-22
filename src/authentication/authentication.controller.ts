@@ -46,7 +46,12 @@ export class AuthenticationController {
 
   @Get()
   @ApiBearerAuth()
-  @ApiOperation({ summary: 'Obtener informacion del autenticado' })
+  @ApiOperation({
+    summary: 'Obtener informacion del autenticado',
+    description: `
+  Se obtendran todos los datos relacionados al usuario portador del token con que se esta realizando la solicitud
+  `,
+  })
   @UseGuards(JwtAuthenticationGuard)
   authenticate(@Req() request: RequestWithUser) {
     const user = request.user;
