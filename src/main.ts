@@ -43,6 +43,6 @@ async function bootstrap() {
     secretAccessKey: configService.awsSecretAccessKey,
     region: configService.awsRegion,
   });
-  await app.listen(configService.port);
+  await app.listen(configService.port || 3000);
 }
 bootstrap();
